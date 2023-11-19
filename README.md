@@ -11,7 +11,7 @@ MapReduce is a programming model and associated implementation designed for proc
 - The reduce function is applied to the output of the map function, combining values with the same key to produce a possibly smaller set of values.
 
 <img width="420" alt="image" src="https://github.com/Nick-zhen/MIT6.824/assets/62523802/2e319b2e-5b4b-4aca-92a7-13324680bdbe">
-The figure is from MapReduce: Simplified Data Processing on Large Clusters![image](https://github.com/Nick-zhen/MIT6.824/assets/62523802/c2134339-e9b7-4cc0-8920-56acd5505556)
+The figure is from MapReduce: Simplified Data Processing on Large Clusters
 
 
 ## What problem are we going to solve
