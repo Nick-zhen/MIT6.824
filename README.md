@@ -45,3 +45,28 @@ We are using this model to solve the word counting problems.
 13. **Reducer Output Handling**: The reducer writes the results of the reduce operation to a temporary path. Once this is done, the reducer informs the master of the temporary path, indicating the task's completion.
 14. **Final Verification by Master**: The master then verifies the reducer requests. Once validated, it transfers the results of the reduce task from the temporary to the final storage path.
 15. **Completion of Process**: With the confirmation of all reduce tasks' completion by the master, the MapReduce operation is successfully concluded.
+
+## How to Handle Distributed Problems 
+### Fault-tolerance Problem
+1. If a worker (mapper or reducer) encounters an error at a certain step, how should the worker handle it? Should it retry or abandon the current task, and then request a new task for immediate execution? Is it necessary to inform the master proactively? How should intermediate files generated during the process be handled?
+   
+   The Workers will keep running loops and request tasks from the master as long as it has not received a message from the master that indicates the completion of all tasks. If a worker encounters an error during the execution stage, it does not need to report to the master. It can abandon this task and request a new task from the master. Also, the worker could report the error it had to the master. But it also takes some time to send a message. In addition, we are planning to design the master itself to monitor the status of the tasks, which makes the error reporting unnecessary.
+
+2. If the master detects that a particular task has exceeded its time interval, how should it handle the situation?
+
+   The master keeps monitoring the status of the tasks. If it detects that a task has exceeded its time interval. It will assign the task to an idle worker for execution. There should be a task controller, responsible for managing task status, execution time, task ID, task type and so on.
+
+3. If the master observes that a specific task has been redundantly executed multiple times, how should it address this issue?
+
+   To prevent a task from being executed multiple times. A task ID is necessary for checking each task. The task ID is an incrementing counter that increases by 1 each time a task is assigned to a worker. The master’s task controller should keep those ID records. After a worker notifies the master the completion of the task, the master should verify the task ID from work’s task. If the ID is inconsistent in the master’s task controller, it means the task has been reassigned due to timeout, as the reassigned task ID has been increased. In this case, the master considers the task as invalid due to the mismatch of task ID. After receiving the message of task failure, the worker proceeds to the next iteration, requesting a new task from the master.
+
+### Worker Parallelism Problem
+We are not planning to strictly distinguish the map workers and reduce workers. We treat both as workers. In other words, if the master gives a map task to a worker, then the worker will be responsible for both the map and reduce task. Only after the completion of all map tasks, the master will produce the reduce tasks.
+
+The number of mappers and reducers is decided by the user. If you have 5 machines, then you can create 5 workers and they can work simultaneously. If you have only 1 machine but have 8 cores, then you can create 8 workers.
+
+### Data Race Problem
+In this model, we have one master and multiple workers. When multiple workers have requests for master at the same time, it might cause read/write conflicts. How can we handle those conflicts and data race?
+
+We are planning to use mutex locks, making sure to release the lock after each completion of the operation. Try our best to minimize the range of using locks. Because it will decrease the performance of the program.
+
