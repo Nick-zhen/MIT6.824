@@ -20,7 +20,7 @@ We are using this model to solve the word counting problems.
 - The reduce function gets the list of key/value pairs from input and output by summing all counts for a particular word. List (k2, list (v2)) => list (k2, v3)
 
 ### Case 1: sequential word count <br>
- ![image](https://github.com/Nick-zhen/MIT6.824/assets/62523802/1119b356-e8f3-424e-ba31-5e836d9c99f9)
+ ![image](https://github.com/Nick-zhen/MIT6.824/blob/main/pic/sequential.png)
  
 1. Partition the data: the result of split data is <key, value> type. In this case, the key does not matter, it represents the file name. The value represents the word.
 2. Run Map function: each machine will run the map function and output <key, value> type. The key represents the word. The value represents the occurrences of that specific word.
