@@ -28,7 +28,7 @@ We are using this model to solve the word counting problems.
 
 ### Case 2: distributed word count
 
- ![image](https://github.com/Nick-zhen/MIT6.824/assets/62523802/a2b15401-f57e-4683-a478-f55056507a04)
+ ![image](https://github.com/Nick-zhen/MIT6.824/blob/main/pic/distributed.png)
 
 1. **Initialization**: The master node initializes and reads the input file.
 2. **Conversion to Map Tasks**: The master converts the input file into a series of map tasks.
